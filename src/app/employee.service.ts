@@ -1,10 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Employee } from './models/employee';
-import { Department } from './models/department';
-import { Company } from './models/company';
-import { Position } from './models/position';
-//import 'rxjs/add/operator/toPromise';
-//export const EMPLOYEE_SERVICE = 'EmployeeService';
+import { Department, Company, Position } from './models/named-entity';
 
 @Injectable()
 export abstract class EmployeeService {

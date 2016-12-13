@@ -6,7 +6,7 @@ import { EmployeeService } from './employee.service';
   selector: 'employee-link',
   template: `
     <div class="content">
-      <a class="header" (click)="onSelected()">{{employee.name}}</a>
+      <a class="header" (click)="onSelected()">{{employee.firstName}} {{employee.lastName}}</a>
       <div class="extra">
         <p>{{positionName}}</p>
       </div>

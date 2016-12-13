@@ -1,52 +1,50 @@
 import { Employee } from './models/employee';
-import { Department } from './models/department';
-import { Position } from './models/position';
-import { Company } from './models/company';
+import { Department, Position, Company } from './models/named-entity';
 import { EmployeeService } from './employee.service';
 import { Http } from '@angular/http';
 
 enum Positions {
-  Surgeon=1,
+  Surgeon = 1,
   Physician,
   Head,
   Principal
 }
 
 enum Departments {
-  Diagnostics=1,
+  Diagnostics = 1,
   Surgery,
   Emergency
 }
 
 export const EMPLOYEES: Employee[] =
   [
-    new Employee(1, 'Remi', 'Headley', 1, Positions.Physician, Departments.Diagnostics, 7, 'headley@princeton.com'),
-    new Employee(2, 'Alison', 'Cameron', 1, Positions.Physician, Departments.Diagnostics, 7, 'cameron@princeton.com'),
-    new Employee(3, 'Robert', 'Chase', 1, Positions.Surgeon, Departments.Surgery, 9, 'chase@princeton.com'),
-    new Employee(4, 'Eric', 'Foreman', 1, Positions.Physician, Departments.Diagnostics, 7, 'foreman@princeton.com'),
-    new Employee(5, 'Chris', 'Taub', 1, Positions.Physician, Departments.Diagnostics, 7, 'taub@princeton.com'),
-    new Employee(6, 'Amber', 'Volakis', 1, Positions.Physician, Departments.Emergency, 12, 'amber@princeton.com'),
-    new Employee(7, 'Gregory', 'House', 1, Positions.Head, Departments.Diagnostics, 10, 'gregy@princeton.com'),
-    new Employee(8, 'Martha', 'Masters', 1, Positions.Physician, Departments.Emergency, 12, 'masters@princeton.com'),
-    new Employee(9, 'James', 'Wilson', 1, Positions.Head, Departments.Surgery, 10, 'wilson@princeton.com'),
-    new Employee(10, 'Lisa', 'Cuddy', 1, Positions.Principal, null, null, 'cuddy@princeton.com'),
-    new Employee(11, 'Lawrence', 'Kutner', 1, Positions.Surgeon, Departments.Emergency, 12, 'kutner@princeton.com'),
-    new Employee(12, 'John', 'Doe', 1, Positions.Head, Departments.Emergency, 10, 'doe@princeton.com')
+    new Employee({ id: 1, firstName: 'Remi', lastName: 'Headley', companyId: 1, positionId: Positions.Physician, departmentId: Departments.Diagnostics, chiefId: 7, email: 'headley@princeton.com' }),
+    new Employee({ id: 2, firstName: 'Alison', lastName: 'Cameron', companyId: 1, positionId: Positions.Physician, departmentId: Departments.Diagnostics, chiefId: 7, email: 'cameron@princeton.com' }),
+    new Employee({ id: 3, firstName: 'Robert', lastName: 'Chase', companyId: 1, positionId: Positions.Surgeon, departmentId: Departments.Surgery, chiefId: 9, email: 'chase@princeton.com' }),
+    new Employee({ id: 4, firstName: 'Eric', lastName: 'Foreman', companyId: 1, positionId: Positions.Physician, departmentId: Departments.Diagnostics, chiefId: 7, email: 'foreman@princeton.com' }),
+    new Employee({ id: 5, firstName: 'Chris', lastName: 'Taub', companyId: 1, positionId: Positions.Physician, departmentId: Departments.Diagnostics, chiefId: 7, email: 'taub@princeton.com' }),
+    new Employee({ id: 6, firstName: 'Amber', lastName: 'Volakis', companyId: 1, positionId: Positions.Physician, departmentId: Departments.Emergency, chiefId: 12, email: 'amber@princeton.com' }),
+    new Employee({ id: 7, firstName: 'Gregory', lastName: 'House', companyId: 1, positionId: Positions.Head, departmentId: Departments.Diagnostics, chiefId: 10, email: 'gregy@princeton.com' }),
+    new Employee({ id: 8, firstName: 'Martha', lastName: 'Masters', companyId: 1, positionId: Positions.Physician, departmentId: Departments.Emergency, chiefId: 12, email: 'masters@princeton.com' }),
+    new Employee({ id: 9, firstName: 'James', lastName: 'Wilson', companyId: 1, positionId: Positions.Head, departmentId: Departments.Surgery, chiefId: 10, email: 'wilson@princeton.com' }),
+    new Employee({ id: 10, firstName: 'Lisa', lastName: 'Cuddy', companyId: 1, positionId: Positions.Principal, departmentId: null, chiefId: null, email: 'cuddy@princeton.com' }),
+    new Employee({ id: 11, firstName: 'Lawrence', lastName: 'Kutner', companyId: 1, positionId: Positions.Surgeon, departmentId: Departments.Emergency, chiefId: 12, email: 'kutner@princeton.com' }),
+    new Employee({ id: 12, firstName: 'John', lastName: 'Doe', companyId: 1, positionId: Positions.Head, departmentId: Departments.Emergency, chiefId: 10, email: 'doe@princeton.com' })
   ];
 
 export const DEPARTMENTS: Department[] = [
-  new Department(Departments.Diagnostics, 'Diagnostics Department'),
-  new Department(Departments.Surgery, 'Surgery Department'),
-  new Department(Departments.Emergency, 'Emergency Room')
+  new Department({ id: Departments.Diagnostics, name: 'Diagnostics Department'}),
+  new Department({ id: Departments.Surgery, name: 'Surgery Department'}),
+  new Department({ id: Departments.Emergency, name: 'Emergency Room'})
 ];
 
-export const COMPANIES: Company[] = [new Company(1, 'Princeton-Plainsboro')];
+export const COMPANIES: Company[] = [new Company({ id: 1, name: 'Princeton-Plainsboro'})];
 
 export const POSITIONS: Position[] = [
-  new Position(Positions.Surgeon, 'Surgeon'),
-  new Position(Positions.Physician, 'Physician'),
-  new Position(Positions.Head, 'Head of Department'),
-  new Position(Positions.Principal, 'Hospital Principal')
+  new Position({ id: Positions.Surgeon, name: 'Surgeon'}),
+  new Position({ id: Positions.Physician, name: 'Physician'}),
+  new Position({ id: Positions.Head, name: 'Head of Department'}),
+  new Position({ id: Positions.Principal, name: 'Hospital Principal'})
 ];
 
 export class MockEmployeeService implements EmployeeService {
@@ -55,8 +53,12 @@ export class MockEmployeeService implements EmployeeService {
 
   searchEmployees(searchString: string): Promise<Employee[]> {
     return Promise.resolve(
-      EMPLOYEES.filter(employee =>
-        searchString && employee.name.toLowerCase().indexOf(searchString.toLowerCase()) >= 0
+      EMPLOYEES.filter(employee => {
+        if(!searchString)
+          return [];
+        let name = `${employee.firstName} ${employee.lastName}`;
+        return searchString && name.toLowerCase().indexOf(searchString.toLowerCase()) >= 0;
+      }
       ));
   }
 
@@ -81,27 +83,7 @@ export class MockEmployeeService implements EmployeeService {
   }
 
   getEmployee(id: number): Promise<Employee> {
-    return Promise.resolve(EMPLOYEES.find(e=>e.id === id));
-    // return new Promise<Employee>((resolve, reject) => {
-    //   this.http.get(`/api/employees/employee/${id}`).toPromise().then(response => {
-    //     var result = response.json();
-    //     if (result['error'])
-    //       reject(result['error']);
-    //     var e = <Employee>result;
-    //     resolve(new Employee(
-    //       e.id,
-    //       e.firstName,
-    //       e.lastName,
-    //       e.companyId,
-    //       e.positionId,
-    //       e.departmentId,
-    //       e.chiefId,
-    //       e.email,
-    //       e.mobile,
-    //       e.office
-    //     ));
-    //   }).catch(err => reject(err));
-    // });
+    return Promise.resolve(EMPLOYEES.find(e => e.id === id));
   }
 
 } 

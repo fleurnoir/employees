@@ -1,27 +1,38 @@
-import { EmployeeService } from '../employee.service';
-import { Department } from './department';
-import { Position } from './position';
-import { Company } from './company';
+export interface IEmployee {
+  id: number; 
+  firstName: string;
+  lastName: string;
+  companyId: number;
+  positionId: number;
+  departmentId: number;
+  chiefId?: number;
+  email?: string;
+  mobile?: string;
+  office?: string;
+}
 
-import { Lazy } from '../utils/lazy';
-
-export class Employee {
-  constructor(
-    readonly id: number, 
-    readonly firstName: string,
-    readonly lastName: string,
-    readonly companyId: number,
-    readonly positionId: number,
-    readonly departmentId: number,
-    readonly chiefId?: number,
-    readonly email?: string,
-    readonly mobile?: string,
-    readonly office?: string
-    ) {}
+export class Employee implements IEmployee {
+  id: number; 
+  firstName: string;
+  lastName: string;
+  companyId: number;
+  positionId: number;
+  departmentId: number;
+  chiefId?: number;
+  email?: string;
+  mobile?: string;
+  office?: string;
   
-  get name(): string { 
-    return `${this.firstName} ${this.lastName}`; 
+  constructor(obj: IEmployee) {
+    this.id = obj.id;
+    this.firstName = obj.firstName;
+    this.lastName = obj.lastName;
+    this.companyId = obj.companyId;
+    this.positionId = obj.positionId;
+    this.departmentId = obj.departmentId;
+    this.chiefId = obj.chiefId;
+    this.email = obj.email;
+    this.mobile = obj.mobile;
+    this.office = obj.office;
   }
-
-
 }

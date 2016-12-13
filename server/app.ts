@@ -13,6 +13,9 @@ import { employeeRouter } from './routes/employees';
 
 const app: express.Application = express();
 
+var mongoose = require('mongoose');
+mongoose.connect("mongodb://localhost:27017/test");
+
 app.disable('x-powered-by');
 
 app.use(json());

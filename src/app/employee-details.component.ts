@@ -9,7 +9,7 @@ import { Subscription } from 'rxjs';
   template: `
     <div *ngIf="loading">Loading...</div>
     <div *ngIf="employee">
-      <h2>{{employee.name}}</h2>
+      <h2>{{employee.firstName}} {{employee.lastName}}</h2>
       <p *ngIf="position">{{position}}</p>
       <p *ngIf="department">{{department}}</p>
       <p *ngIf="company">{{company}}</p>

@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { EmployeeListComponent } from './employee-list.component';
 import { EmployeeLinkComponent } from './employee-link.component';
 import { EmployeeDetailsComponent } from './employee-details.component';
+import { TestComponent } from './test.component';
 
 import { EmployeeService } from './employee.service';
 import { MockEmployeeService } from './mock-data';
@@ -19,7 +20,8 @@ import { EmployeeHttpService } from './employee-http.service';
     AppComponent,
     EmployeeListComponent,
     EmployeeLinkComponent,
-    EmployeeDetailsComponent 
+    EmployeeDetailsComponent,
+    TestComponent 
   ],
   imports: [
     BrowserModule,
