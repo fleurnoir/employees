@@ -1,52 +1,89 @@
 import { Router, Response, Request } from 'express';
-import { EMPLOYEES, COMPANIES, DEPARTMENTS, POSITIONS } from '../../src/app/mock-data';
-import { Document, Schema, model } from 'mongoose';
+import { IEmployee, Employee } from '../../src/app/models/employee';
+import { INamedEntity, Company, Department, Position } from '../../src/app/models/named-entity';
+import { Document, Schema, model, Model } from 'mongoose';
 
 const employeeRouter: Router = Router();
 
-function makeGet(router: Router, path: string, entityName: string, entities:any[]) {
-  makeGetCore(router, path, id=>entities.find(e => e.id === id) || { error: `${entityName} with id = ${id} not found` });
+interface MongoObject { _id: number }
+
+interface IEmployeeModel extends IEmployee, Document {
+  _id: number;
 }
 
-interface NamedEntity {
-  id: number;
-  name: string;
-}
-
-interface ICountry extends NamedEntity, Document {}
-var namedSchema = new Schema({id: Number, name: String});
-var Country = model<ICountry>('countries', namedSchema);
-
-// function testMongo(id: number) {
-//   Country.findOne({ id: id }).exec((error, result)=>{console.log()});
-// }
-
-employeeRouter.get('/test/:id', (request, response)=>{
-  Country.findOne({ id: +request.params.id }).exec((error,country)=>{
-    if(error)
-      response.json({ info: 'Error occured', error: error });
-    else if(!country)
-      response.json({ info: 'Error occured', error: `No country with id = ${request.params.id}`});
-    else
-      response.json({ info: 'Country found', data: country });
-  });
+let employeeSchema = new Schema({
+  _id: Number,
+  firstName: String,
+  lastName: String,
+  companyId: Number,
+  positionId: Number,
+  departmentId: Number,
+  chiefId: Number,
+  email: String,
+  mobile: String,
+  office: String
 });
 
-function makeGetCore(router: Router, path: string, getResult: (id:number)=>any) {
+let EmployeeModel = model<IEmployeeModel>('employees', employeeSchema);
+
+interface INamedEntityModel extends INamedEntity, Document {
+  _id: number;
+}
+
+let namedSchema = new Schema({
+  _id: Number,
+  name: String
+});
+
+let CompanyModel = model<INamedEntityModel>('companies', namedSchema);
+let DepartmentModel = model<INamedEntityModel>('departments', namedSchema);
+let PositionModel = model<INamedEntityModel>('positions', namedSchema);
+
+employeeRouter.get('/search/:input', (request, response) => {
+  EmployeeModel.find({
+    $where: `(this.firstName + " " + this.lastName).toLowerCase().indexOf(${JSON.stringify(request.params.input)}) >= 0`
+  }).exec((err, res) => {
+    if (err)
+      response.json({ error: err });
+    else
+      response.json(res.map(item => {
+        item.id = item._id;
+        return new Employee(item);
+      }));
+  });
+})
+
+function makeGetCore(router: Router, path: string, getResult: (id: number) => Promise<any>) {
   router.get(path, (request: Request, response: Response) => {
     var id = +request.params['id'];
-    if(!id)
+    if (!id)
       response.json({ error: `No id given` });
     else {
-      response.json(getResult(id));
+      getResult(id).then(res => response.json(res)).catch(err => response.json({ error: err }));
     }
   });
 }
 
-makeGet(employeeRouter, '/employee/:id', 'Employee', EMPLOYEES);
-makeGet(employeeRouter, '/department/:id', 'Department', DEPARTMENTS);
-makeGet(employeeRouter, '/company/:id', 'Company', COMPANIES);
-makeGet(employeeRouter, '/position/:id', 'Position', POSITIONS);
-makeGetCore(employeeRouter, '/subordinates/:id', id=>EMPLOYEES.filter(e=>e.chiefId===id));
+function makeGet<TModel extends Document>(router: Router, path: string, model: Model<TModel>, constructor: (item: TModel) => any) {
+  makeGetCore(router, path, id => model.findOne({ _id: id }).exec().then(
+    item => {
+      (<any>item).id = +item._id
+      return constructor(item);
+    }));
+}
+
+makeGet(employeeRouter, '/employee/:id', EmployeeModel, item => new Employee(item));
+makeGet(employeeRouter, '/department/:id', DepartmentModel, item => new Department(item));
+makeGet(employeeRouter, '/company/:id', CompanyModel, item => new Company(item));
+makeGet(employeeRouter, '/position/:id', PositionModel, item => new Position(item));
+makeGetCore(employeeRouter, '/subordinates/:id',
+  id => EmployeeModel
+    .find({ chiefId: id })
+    .exec()
+    .then(result => result.map(item => {
+      item.id = +item._id;
+      return new Employee(item);
+    })));
+makeGetCore(employeeRouter, '/subcount/:id', id => EmployeeModel.count({ chiefId: id }).exec());
 
 export { employeeRouter }

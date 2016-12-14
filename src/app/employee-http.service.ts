@@ -1,5 +1,3 @@
-import { EMPLOYEES, DEPARTMENTS, POSITIONS, COMPANIES } from './mock-data';
-
 import { Http } from '@angular/http';
 import { Injectable } from '@angular/core';
 
@@ -50,7 +48,7 @@ export class EmployeeHttpService implements EmployeeService {
   }
 
   getSubordinatesCount(chiefId: number): Promise<number> {
-    return this.getSubordinates(chiefId).then(employees => employees.length);
+    return this.request('subcount', chiefId, result=>+result);
   }
 
   getSubordinates(chiefId: number): Promise<Employee[]> {

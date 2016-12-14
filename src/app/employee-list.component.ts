@@ -21,25 +21,25 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
 
   constructor(
     private service: EmployeeService,
-    private router: Router, 
-    private route: ActivatedRoute) {}
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.subscription = this.route.queryParams.subscribe(params=>{
+    this.subscription = this.route.queryParams.subscribe(params => {
       this.input = params['input'];
       let chiefId = params['chiefId'];
-      if(this.input || chiefId) {
-        this.loading=true;
-        
-        let request: (()=>Promise<Employee[]>) = chiefId 
-          ? ()=>this.service.getSubordinates(+chiefId) 
-          : ()=>this.service.searchEmployees(this.input);
+      if (this.input || chiefId) {
+        this.loading = true;
+
+        let request: (() => Promise<Employee[]>) = chiefId
+          ? () => this.service.getSubordinates(+chiefId)
+          : () => this.service.searchEmployees(this.input);
 
         request()
-        .then(employees=>{this.loading=false; this.employees=employees;})
-        .catch(error=>{this.loading=false; console.error(error);});
+          .then(employees => { this.loading = false; this.employees = employees; })
+          .catch(error => { this.loading = false; console.error(error); });
       }
-      else 
+      else
         this.employees = [];
     });
   }

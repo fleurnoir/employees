@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
       <p *ngIf="department">{{department}}</p>
       <p *ngIf="company">{{company}}</p>
       <p *ngIf="subordinatesCount"><a href="#" (click)="showSubordinates()"> <b>Subordinates:</b> {{subordinatesCount}}</a></p>
-      <p *ngIf="chief"><a href="#" (click)="showChief()"><b>Chief:</b> {{chief.name}}</a></p>
+      <p *ngIf="chief"><a href="#" (click)="showChief()"><b>Chief:</b> {{chief.firstName}} {{chief.lastName}}</a></p>
     </div>
   `
 })
