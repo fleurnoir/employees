@@ -22,16 +22,6 @@ app.use(json());
 app.use(compression());
 app.use(urlencoded({ extended: true }));
 
-// app.get('/api/test', (request, response)=>{
-//   response.json({ message: 'haha!' });
-// });
-
-// api routes
-// app.use('/api/secure', protectedRouter);
-// app.use('/api/login', loginRouter);
-// app.use('/api/public', publicRouter);
-// app.use('/api/feed', feedRouter);
-// app.use('/api/user', userRouter);
 app.use('/api/employees', employeeRouter);
 
 if (app.get('env') === 'production') {

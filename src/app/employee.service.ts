@@ -11,4 +11,5 @@ export abstract class EmployeeService {
   abstract getSubordinatesCount(chiefId: number): Promise<number>;
   abstract getSubordinates(chiefId: number): Promise<Employee[]>;
   abstract getEmployee(id: number): Promise<Employee>;
+  abstract getPhotoUrl(employeeId: number): string;
 }

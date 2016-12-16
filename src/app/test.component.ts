@@ -7,6 +7,7 @@ import { EMPLOYEES, POSITIONS, DEPARTMENTS, COMPANIES } from './mock-data';
   template: `
     <!--<p *ngFor="let item of items">{{item}}</p>-->
     <p (click)="click()">{{str}}</p>
+    <input type="file" accept=".jpg,.jpeg" #file (change)="onChoose(file.files[0])"/>
   `
 })
 export class TestComponent {
@@ -27,5 +28,17 @@ export class TestComponent {
     }));
     console.log(obj.$where);
     console.log(JSON.parse(this.str));
+  }
+
+  onChoose(file: any): void {
+    //console.log(file);
+    let reader = new FileReader();
+    reader.onload = function () {
+      let arrayBuffer = this.result,
+        array = new Uint8Array(arrayBuffer),
+        binaryString = btoa(String.fromCharCode.apply(null, array));
+      console.log(binaryString);
+    }
+    reader.readAsArrayBuffer(file);
   }
 }

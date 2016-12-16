@@ -58,5 +58,9 @@ export class EmployeeHttpService implements EmployeeService {
   getEmployee(id: number): Promise<Employee> {
     return this.request('employee', id, item=>new Employee(item));
   }
+
+  getPhotoUrl(employeeId: number) {
+    return `api/employees/photo/${employeeId}`;
+  }
 }
 

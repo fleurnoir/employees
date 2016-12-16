@@ -5,8 +5,6 @@ import { Document, Schema, model, Model } from 'mongoose';
 
 const employeeRouter: Router = Router();
 
-interface MongoObject { _id: number }
-
 interface IEmployeeModel extends IEmployee, Document {
   _id: number;
 }
@@ -51,7 +49,25 @@ employeeRouter.get('/search/:input', (request, response) => {
         return new Employee(item);
       }));
   });
-})
+});
+
+interface IPhoto extends Document {
+  _id: number;
+  photo: Buffer;
+}
+
+let photoModel = model<IPhoto>('employeePhoto', new Schema({
+  _id: Number,
+  photo: Buffer
+}), 'employees');
+
+employeeRouter.get('/photo/:id', (request,response)=>{
+  let id = +request.params['id'];
+  photoModel.findOne({_id:id}).then(photo=>{
+    response.type('image/jpeg');
+    response.end(photo.photo);
+  });
+});
 
 function makeGetCore(router: Router, path: string, getResult: (id: number) => Promise<any>) {
   router.get(path, (request: Request, response: Response) => {

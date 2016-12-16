@@ -86,4 +86,6 @@ export class MockEmployeeService implements EmployeeService {
     return Promise.resolve(EMPLOYEES.find(e => e.id === id));
   }
 
+  getPhotoUrl(id: number): string { return null; }
+
 } 
