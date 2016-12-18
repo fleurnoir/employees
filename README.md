@@ -7,6 +7,8 @@
 - ExpressJS ( 4.x - with compression )
 - Webpack ( angular-cli )
 
+Based on: https://github.com/vladotesanovic/angular2-express-starter
+
 ## Install / Development
 
 # Install dependencies
