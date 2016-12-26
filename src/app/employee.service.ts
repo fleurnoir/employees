@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Employee } from './models/employee';
 import { Department, Company, Position } from './models/named-entity';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export abstract class EmployeeService {
-  abstract searchEmployees(searchString: string): Promise<Employee[]>;
-  abstract getDepartment(id: number): Promise<Department>;
-  abstract getPosition(id: number): Promise<Position>;
-  abstract getCompany(id: number): Promise<Company>;
-  abstract getSubordinatesCount(chiefId: number): Promise<number>;
-  abstract getSubordinates(chiefId: number): Promise<Employee[]>;
-  abstract getEmployee(id: number): Promise<Employee>;
+  abstract searchEmployees(searchString: string): Observable<Employee[]>;
+  abstract getDepartment(id: number): Observable<Department>;
+  abstract getPosition(id: number): Observable<Position>;
+  abstract getCompany(id: number): Observable<Company>;
+  abstract getSubordinatesCount(chiefId: number): Observable<number>;
+  abstract getSubordinates(chiefId: number): Observable<Employee[]>;
+  abstract getEmployee(id: number): Observable<Employee>;
   abstract getPhotoUrl(employeeId: number): string;
 }

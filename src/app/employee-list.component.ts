@@ -3,7 +3,7 @@ import { Employee } from './models/employee';
 import { EmployeeLinkView } from './models/employee-link-view';
 import { EmployeeService } from './employee.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { withLog } from './utils';
 
 @Component({
@@ -33,31 +33,31 @@ export class EmployeeListComponent implements OnInit, OnDestroy {
       if (this.input || chiefId) {
         this.loading = true;
         this.employees = null;
-        let request: (() => Promise<Employee[]>) = chiefId
+        let request: (() => Observable<Employee[]>) = chiefId
           ? () => this.service.getSubordinates(+chiefId)
           : () => this.service.searchEmployees(this.input);
 
         withLog(request())
-          .then(employees => {
+          .subscribe(employees => {
+            
             if (!employees) {
               this.loading = false;
               return;
             }
 
-            Promise.all(employees.map(e => withLog(this.service.getPosition(e.positionId))))
-              .then(positions => {
-                this.loading = false;
-                //console.log(positions);
-                let result = <EmployeeLinkView[]>[];
-                for (let i = 0; i < employees.length; i++) {
-                  let view = new EmployeeLinkView();
-                  view.id = employees[i].id;
-                  view.name = `${employees[i].firstName} ${employees[i].lastName}`;
-                  view.position = positions[i].name;
-                  result.push(view);
-                }
-                this.employees = result;
+            this.loading = false;
+
+            this.employees = <EmployeeLinkView[]>[];
+            for(let i=0; i<employees.length; i++) {
+              let employee = employees[i];
+              withLog(this.service.getPosition(employee.positionId)).subscribe(p=>{
+                let view = new EmployeeLinkView();
+                view.id = employee.id;
+                view.name = `${employee.firstName} ${employee.lastName}`;
+                view.position = p && p.name;
+                this.employees.push(view);
               });
+            }
           })
       }
       else

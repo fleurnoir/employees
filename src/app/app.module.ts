@@ -12,7 +12,7 @@ import { EmployeeDetailsComponent } from './employee-details.component';
 import { TestComponent } from './test.component';
 
 import { EmployeeService } from './employee.service';
-import { MockEmployeeService } from './mock-data';
+//import { MockEmployeeService } from './mock-data';
 import { EmployeeHttpService } from './employee-http.service';
 
 @NgModule({

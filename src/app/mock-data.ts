@@ -2,6 +2,7 @@ import { Employee } from './models/employee';
 import { Department, Position, Company } from './models/named-entity';
 import { EmployeeService } from './employee.service';
 import { Http } from '@angular/http';
+import { Observable } from 'rxjs';
 
 enum Positions {
   Surgeon = 1,
@@ -47,45 +48,45 @@ export const POSITIONS: Position[] = [
   new Position({ id: Positions.Principal, name: 'Hospital Principal'})
 ];
 
-export class MockEmployeeService implements EmployeeService {
+// export class MockEmployeeService implements EmployeeService {
 
-  constructor(/*private http: Http*/) { }
+//   constructor(/*private http: Http*/) { }
 
-  searchEmployees(searchString: string): Promise<Employee[]> {
-    return Promise.resolve(
-      EMPLOYEES.filter(employee => {
-        if(!searchString)
-          return [];
-        let name = `${employee.firstName} ${employee.lastName}`;
-        return searchString && name.toLowerCase().indexOf(searchString.toLowerCase()) >= 0;
-      }
-      ));
-  }
+//   searchEmployees(searchString: string): Promise<Employee[]> {
+//     return Promise.resolve(
+//       EMPLOYEES.filter(employee => {
+//         if(!searchString)
+//           return [];
+//         let name = `${employee.firstName} ${employee.lastName}`;
+//         return searchString && name.toLowerCase().indexOf(searchString.toLowerCase()) >= 0;
+//       }
+//       ));
+//   }
 
-  getDepartment(id: number): Promise<Department> {
-    return Promise.resolve(DEPARTMENTS.find(d => d.id === id));
-  }
+//   getDepartment(id: number): Promise<Department> {
+//     return Promise.resolve(DEPARTMENTS.find(d => d.id === id));
+//   }
 
-  getPosition(id: number): Promise<Position> {
-    return Promise.resolve(POSITIONS.find(p => p.id === id));
-  }
+//   getPosition(id: number): Promise<Position> {
+//     return Promise.resolve(POSITIONS.find(p => p.id === id));
+//   }
 
-  getCompany(id: number): Promise<Company> {
-    return Promise.resolve(COMPANIES.find(c => c.id === id));
-  }
+//   getCompany(id: number): Promise<Company> {
+//     return Promise.resolve(COMPANIES.find(c => c.id === id));
+//   }
 
-  getSubordinatesCount(chiefId: number): Promise<number> {
-    return this.getSubordinates(chiefId).then(employees => employees.length);
-  }
+//   getSubordinatesCount(chiefId: number): Promise<number> {
+//     return this.getSubordinates(chiefId).then(employees => employees.length);
+//   }
 
-  getSubordinates(chiefId: number): Promise<Employee[]> {
-    return Promise.resolve(EMPLOYEES.filter(employee => employee.chiefId === chiefId));
-  }
+//   getSubordinates(chiefId: number): Promise<Employee[]> {
+//     return Promise.resolve(EMPLOYEES.filter(employee => employee.chiefId === chiefId));
+//   }
 
-  getEmployee(id: number): Promise<Employee> {
-    return Promise.resolve(EMPLOYEES.find(e => e.id === id));
-  }
+//   getEmployee(id: number): Promise<Employee> {
+//     return Promise.resolve(EMPLOYEES.find(e => e.id === id));
+//   }
 
-  getPhotoUrl(id: number): string { return null; }
+//   getPhotoUrl(id: number): string { return null; }
 
-} 
+// } 

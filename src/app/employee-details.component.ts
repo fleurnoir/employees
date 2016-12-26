@@ -62,33 +62,22 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy {
       if (id) {
         this.loading = true;
         this.employee = null;
-        this.service.getEmployee(+id).then(employee => {
+        withLog(this.service.getEmployee(+id)).subscribe(employee => {
 
           if (!employee) {
             this.loading = false;
             return;
           }
 
-          Promise.all<Department, Company, Employee, Position, number>([
-            withLog(this.service.getDepartment(employee.departmentId)),
-            withLog(this.service.getCompany(employee.companyId)),
-            withLog(this.service.getEmployee(employee.chiefId)),
-            withLog(this.service.getPosition(employee.positionId)),
-            withLog(this.service.getSubordinatesCount(employee.id))
-          ]).then(([department, company, chief, position, subCount]) => {
-            this.loading = false;
-            this.employee = employee;
-            this.photoUrl = this.service.getPhotoUrl(employee.id);
-            this.position = position && position.name;
-            this.department = department && department.name;
-            this.company = company && company.name;
-            this.chief = chief;
-            this.subordinatesCount = subCount;
-          });
+          withLog(this.service.getDepartment(employee.departmentId)).subscribe(d=>this.department = d && d.name);
+          withLog(this.service.getCompany(employee.companyId)).subscribe(c=>this.company = c && c.name);
+          withLog(this.service.getEmployee(employee.chiefId)).subscribe(c=>this.chief = c);
+          withLog(this.service.getPosition(employee.positionId)).subscribe(p=>this.position = p && p.name);
+          withLog(this.service.getSubordinatesCount(employee.id)).subscribe(c=>this.subordinatesCount=c);
 
-        }).catch(error => {
+          this.employee = employee;
+          this.photoUrl = this.service.getPhotoUrl(employee.id);
           this.loading = false;
-          console.log(error);
         });
       }
     });

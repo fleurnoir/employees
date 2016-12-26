@@ -1,9 +1,8 @@
-export function withLog<T>(promise: Promise<T>): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    promise.then(result => resolve(result))
-      .catch(err => {
-        console.error(err);
-        resolve(null);
-      });
+import { Observable } from 'rxjs';
+
+export function withLog<T>(observable: Observable<T>): Observable<T> {
+  return observable.catch((error, obs)=>{
+    console.log(error);
+    return Observable.empty<T>();
   });
 }
